@@ -14,6 +14,16 @@ import DAsyncContent from "discourse/ui-kit/d-async-content";
 // contributor ids in a post custom field when a revision is created.
 const MAX_REVISIONS = 50;
 
+// A display filter, not a removal: the revisions stay in the database and stay
+// visible in the post's own history modal. Serializer usernames are lowercased,
+// so match on that.
+const excludedUsers = new Set(
+  (settings.excluded_users || "")
+    .split("|")
+    .filter(Boolean)
+    .map((username) => username.trim().toLowerCase())
+);
+
 const parseIds = (value) =>
   (value || "")
     .split("|")
@@ -44,9 +54,9 @@ async function fetchEditors(post) {
     .concat(latest)
     .sort((a, b) => a.current_revision - b.current_revision);
 
-  // Seeded with the post's own author: nobody is a co-author of their own
-  // post. `username` is already lowercased by the serializer.
-  const seen = new Set([(post.username || "").toLowerCase()]);
+  // Seeded with the post's own author (nobody co-authors their own post) and
+  // with the excluded usernames, so both drop out of the same pass.
+  const seen = new Set([(post.username || "").toLowerCase(), ...excludedUsers]);
 
   return revisions
     .filter((revision) => {

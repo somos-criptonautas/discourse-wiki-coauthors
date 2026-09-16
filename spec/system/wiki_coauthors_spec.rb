@@ -54,6 +54,28 @@ RSpec.describe "Wiki co-authors" do
     expect(listed_coauthors).to eq(%w[first_editor])
   end
 
+  it "never credits an excluded user" do
+    component.update_setting(:excluded_users, "second_editor")
+    component.save!
+    post = wiki_post_in(target_category, editors: [first_editor, second_editor])
+
+    visit_post(post)
+
+    expect(page).to have_css(".wiki-coauthors")
+    expect(listed_coauthors).to eq(%w[first_editor])
+  end
+
+  it "renders nothing when every editor is excluded" do
+    component.update_setting(:excluded_users, "first_editor|second_editor")
+    component.save!
+    post = wiki_post_in(target_category, editors: [first_editor, second_editor])
+
+    visit_post(post)
+
+    expect(page).to have_css(".cooked")
+    expect(page).to have_no_css(".wiki-coauthors")
+  end
+
   it "renders nothing on an unedited wiki post" do
     post = wiki_post_in(target_category)
 

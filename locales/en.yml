@@ -4,5 +4,6 @@ en:
     settings:
       target_categories: "Categories whose wiki posts show the co-author list. Empty means every category."
       label: "Text shown before the co-author names. Empty uses the viewer's own language."
+      excluded_users: "Usernames never credited in the list. A display filter only: their edits stay in the post's history."
   coauthors:
     label: "Co-edited by"

@@ -28,6 +28,7 @@ site-wide.
 | --- | --- | --- |
 | `target_categories` | — | Categories whose wiki posts show the list. Empty means every category. |
 | `label` | — | Text shown before the names. Empty uses the viewer's own language. |
+| `excluded_users` | — | Usernames never credited. See *Removing someone* below. |
 
 Ships with English and Spanish translations (`locales/en.yml`, `locales/es.yml`),
 covering both the setting descriptions and the default label
@@ -49,6 +50,20 @@ every language.
 - While loading, and on failure, and when there are no co-authors, renders
   nothing at all. No spinner, no error block — it sits above the replies and
   would otherwise push them around for nothing.
+
+### Removing someone
+
+`excluded_users` drops a username from the list. Be clear about what it is: a
+**display filter**, not a removal. The revisions stay in the database and stay
+visible to anyone who opens the post's own edit-history modal.
+
+Core offers no surgical removal either. Staff can hide individual revisions,
+which drops them for regular users — but `can_view_hidden_post_revisions?` is
+`is_staff?`, so **staff still see a hidden editor credited** on the same page.
+The admin "permanently delete revisions" action calls `post.revisions
+.destroy_all`, so it erases every revision on the post rather than one
+person's. Anonymizing a user is the one path that genuinely removes the name,
+and Discourse handles it everywhere at once.
 
 ### Known limits
 

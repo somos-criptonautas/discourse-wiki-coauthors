@@ -6,3 +6,8 @@ target_categories:
 label:
   type: string
   default: ""
+
+excluded_users:
+  type: list
+  list_type: simple
+  default: ""

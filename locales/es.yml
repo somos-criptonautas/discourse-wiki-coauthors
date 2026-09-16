@@ -4,5 +4,6 @@ es:
     settings:
       target_categories: "Categorías cuyos posts wiki muestran la lista de coautores. Vacío significa todas las categorías."
       label: "Texto que aparece antes de los nombres de los coautores. Vacío usa el idioma de quien lee."
+      excluded_users: "Usuarios que nunca se acreditan en la lista. Solo es un filtro de visualización: sus ediciones siguen en el historial del post."
   coauthors:
     label: "Coeditado por"
