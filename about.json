@@ -1,0 +1,12 @@
+{
+  "name": "Wiki Co-authors",
+  "component": true,
+  "authors": "satoshinotdead",
+  "about_url": null,
+  "license_url": null,
+  "theme_version": "0.0.1",
+  "minimum_discourse_version": "2026.7.2",
+  "maximum_discourse_version": null,
+  "assets": {},
+  "modifiers": {}
+}

@@ -1,0 +1,8 @@
+en:
+  theme_metadata:
+    description: "Credits everyone who edited a wiki post, listed under the post itself."
+    settings:
+      target_categories: "Categories whose wiki posts show the co-author list. Empty means every category."
+      label: "Text shown before the co-author names. Empty uses the viewer's own language."
+  coauthors:
+    label: "Co-edited by"

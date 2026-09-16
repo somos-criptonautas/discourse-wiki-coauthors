@@ -1,0 +1,8 @@
+target_categories:
+  type: list
+  list_type: category
+  default: ""
+
+label:
+  type: string
+  default: ""
