@@ -5,5 +5,15 @@ es:
       target_categories: "Categorías cuyos posts wiki muestran la lista de coautores. Vacío significa todas las categorías."
       label: "Texto que aparece antes de los nombres de los coautores. Vacío usa el idioma de quien lee."
       excluded_users: "Usuarios que nunca se acreditan en la lista. Solo es un filtro de visualización: sus ediciones siguen en el historial del post."
+      label_overrides:
+        description: "Texto por categoría, que reemplaza la etiqueta de arriba. Las categorías no listadas la conservan."
+        schema:
+          properties:
+            category_ids:
+              label: "Categorías"
+              description: "Categorías que usan este texto."
+            label:
+              label: "Texto"
+              description: "Texto que aparece antes de los nombres en esas categorías."
   coauthors:
     label: "Coeditado por"

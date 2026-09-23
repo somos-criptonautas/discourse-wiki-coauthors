@@ -11,3 +11,20 @@ excluded_users:
   type: list
   list_type: simple
   default: ""
+
+label_overrides:
+  type: objects
+  default: []
+  schema:
+    name: override
+    properties:
+      category_ids:
+        type: categories
+        required: true
+        validations:
+          min: 1
+      label:
+        type: string
+        required: true
+        validations:
+          min_length: 1

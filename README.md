@@ -29,6 +29,7 @@ site-wide.
 | `target_categories` | — | Categories whose wiki posts show the list. Empty means every category. |
 | `label` | — | Text shown before the names. Empty uses the viewer's own language. |
 | `excluded_users` | — | Usernames never credited. See *Removing someone* below. |
+| `label_overrides` | — | Per-category wording. Categories not listed use `label`. |
 
 Ships with English and Spanish translations (`locales/en.yml`, `locales/es.yml`),
 covering both the setting descriptions and the default label
@@ -50,6 +51,19 @@ every language.
 - While loading, and on failure, and when there are no co-authors, renders
   nothing at all. No spinner, no error block — it sits above the replies and
   would otherwise push them around for nothing.
+
+### Per-category wording
+
+`label_overrides` pairs a set of categories with the text to use there, so one
+category can read *Co-authored by* while the rest read *Co-edited by*. It is an
+`objects` setting, so the admin UI gives a category picker and a text field —
+add a row per wording, not per category. Categories in no row fall back to
+`label`, and `label` itself falls back to the viewer's language. A category
+listed in two rows takes the last one.
+
+Text set this way is one fixed string for every language. To vary the wording
+*and* keep it translated, leave these settings empty and override
+`coauthors.label` per locale in the theme's translation editor instead.
 
 ### Removing someone
 

@@ -5,5 +5,15 @@ en:
       target_categories: "Categories whose wiki posts show the co-author list. Empty means every category."
       label: "Text shown before the co-author names. Empty uses the viewer's own language."
       excluded_users: "Usernames never credited in the list. A display filter only: their edits stay in the post's history."
+      label_overrides:
+        description: "Per-category wording, overriding the label above. Categories not listed keep it."
+        schema:
+          properties:
+            category_ids:
+              label: "Categories"
+              description: "Categories that use this wording."
+            label:
+              label: "Text"
+              description: "Text shown before the names in those categories."
   coauthors:
     label: "Co-edited by"

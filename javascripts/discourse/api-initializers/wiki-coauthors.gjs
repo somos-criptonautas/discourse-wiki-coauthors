@@ -24,6 +24,14 @@ const excludedUsers = new Set(
     .map((username) => username.trim().toLowerCase())
 );
 
+// Category id -> label. A category listed in two overrides takes the last one,
+// which is how the Map constructor resolves duplicate keys.
+const labelOverrides = new Map(
+  (settings.label_overrides || []).flatMap((override) =>
+    (override.category_ids || []).map((id) => [id, override.label])
+  )
+);
+
 const parseIds = (value) =>
   (value || "")
     .split("|")
@@ -117,11 +125,17 @@ export default apiInitializer((api) => {
 
   // An empty setting falls back to the theme's own translation, so a
   // Spanish-reading member sees "Coeditado por" without anyone configuring it.
-  const label = settings.label || i18n(themePrefix("coauthors.label"));
+  const defaultLabel = settings.label || i18n(themePrefix("coauthors.label"));
+
+  const labelFor = (post) =>
+    labelOverrides.get(post?.topic?.category_id) || defaultLabel;
 
   const Connector = <template>
     {{#if (shouldRender @outletArgs.post)}}
-      <WikiCoauthors @post={{@outletArgs.post}} @label={{label}} />
+      <WikiCoauthors
+        @post={{@outletArgs.post}}
+        @label={{labelFor @outletArgs.post}}
+      />
     {{/if}}
   </template>;
 

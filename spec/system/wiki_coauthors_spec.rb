@@ -76,6 +76,25 @@ RSpec.describe "Wiki co-authors" do
     expect(page).to have_no_css(".wiki-coauthors")
   end
 
+  it "uses the per-category wording where one is set, the default elsewhere" do
+    component.update_setting(:target_categories, "")
+    component.update_setting(:label, "Co-edited by")
+    component.update_setting(
+      :label_overrides,
+      [{ "category_ids" => [target_category.id], "label" => "Co-authored by" }].to_json,
+    )
+    component.save!
+
+    overridden = wiki_post_in(target_category, editors: [first_editor])
+    plain = wiki_post_in(other_category, editors: [first_editor])
+
+    visit_post(overridden)
+    expect(page).to have_css(".wiki-coauthors__label", text: "Co-authored by")
+
+    visit_post(plain)
+    expect(page).to have_css(".wiki-coauthors__label", text: "Co-edited by")
+  end
+
   it "renders nothing on an unedited wiki post" do
     post = wiki_post_in(target_category)
 
