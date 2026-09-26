@@ -1,5 +1,6 @@
 import Component from "@glimmer/component";
 import { apiInitializer } from "discourse/lib/api";
+import { avatarUrl } from "discourse/lib/avatar-utils";
 import getURL from "discourse/lib/get-url";
 import Post from "discourse/models/post";
 import { i18n } from "discourse-i18n";
@@ -32,6 +33,10 @@ const labelOverrides = new Map(
   )
 );
 
+// Past this many, the rest go behind a disclosure. `<details>` does the
+// toggling, so there is no open/closed state to track.
+const maxAvatars = Math.max(1, parseInt(settings.max_avatars, 10) || 5);
+
 const parseIds = (value) =>
   (value || "")
     .split("|")
@@ -62,24 +67,68 @@ async function fetchEditors(post) {
     .concat(latest)
     .sort((a, b) => a.current_revision - b.current_revision);
 
-  // Seeded with the post's own author (nobody co-authors their own post) and
-  // with the excluded usernames, so both drop out of the same pass.
-  const seen = new Set([(post.username || "").toLowerCase(), ...excludedUsers]);
+  // Skipped outright: the post's own author (nobody co-authors their own post)
+  // and the excluded usernames. `username` is already lowercased by the
+  // serializer.
+  const skip = new Set([(post.username || "").toLowerCase(), ...excludedUsers]);
 
-  return revisions
-    .filter((revision) => {
-      if (seen.has(revision.username)) {
-        return false;
-      }
-      seen.add(revision.username);
-      return true;
-    })
-    .map((revision) => ({
-      username: revision.username,
-      displayUsername: revision.display_username,
-      url: getURL(`/u/${revision.username}`),
+  const counts = new Map();
+
+  for (const revision of revisions) {
+    if (skip.has(revision.username)) {
+      continue;
+    }
+
+    const counted = counts.get(revision.username);
+
+    if (counted) {
+      counted.edits++;
+    } else {
+      counts.set(revision.username, {
+        username: revision.username,
+        displayUsername: revision.display_username,
+        avatarTemplate: revision.avatar_template,
+        edits: 1,
+      });
+    }
+  }
+
+  // Most edits first. `sort` is stable, and `counts` was filled in revision
+  // order, so people tied on edit count keep the order they first edited in.
+  return [...counts.values()]
+    .sort((a, b) => b.edits - a.edits)
+    .map((editor) => ({
+      ...editor,
+      url: getURL(`/u/${editor.username}`),
+      avatarUrl: avatarUrl(editor.avatarTemplate, "small"),
     }));
 }
+
+const visibleEditors = (editors) => editors.slice(0, maxAvatars);
+const overflowEditors = (editors) => editors.slice(maxAvatars);
+const overflowLabel = (editors) =>
+  i18n(themePrefix("coauthors.more"), { count: editors.length - maxAvatars });
+
+// `title` rather than a visible name: the list is avatars, and the edit count
+// is the reason this person is ranked where they are.
+const CoauthorAvatar = <template>
+  <li class="wiki-coauthors__item">
+    <a
+      class="wiki-coauthors__user"
+      href={{@editor.url}}
+      title="{{@editor.displayUsername}} ({{@editor.edits}})"
+    >
+      <img
+        class="wiki-coauthors__avatar"
+        src={{@editor.avatarUrl}}
+        alt={{@editor.displayUsername}}
+        width="24"
+        height="24"
+        loading="lazy"
+      />
+    </a>
+  </li>
+</template>;
 
 class WikiCoauthors extends Component {
   // An arrow field, so the template reads it as a value rather than invoking
@@ -98,14 +147,22 @@ class WikiCoauthors extends Component {
         <div class="wiki-coauthors">
           <span class="wiki-coauthors__label">{{@label}}</span>
           <ul class="wiki-coauthors__list">
-            {{#each editors key="username" as |editor|}}
-              <li class="wiki-coauthors__item">
-                <a class="wiki-coauthors__user" href={{editor.url}}>
-                  {{editor.displayUsername}}
-                </a>
-              </li>
+            {{#each (visibleEditors editors) key="username" as |editor|}}
+              <CoauthorAvatar @editor={{editor}} />
             {{/each}}
           </ul>
+          {{#if (overflowEditors editors)}}
+            <details class="wiki-coauthors__more">
+              <summary class="wiki-coauthors__more-toggle">
+                {{overflowLabel editors}}
+              </summary>
+              <ul class="wiki-coauthors__list">
+                {{#each (overflowEditors editors) key="username" as |editor|}}
+                  <CoauthorAvatar @editor={{editor}} />
+                {{/each}}
+              </ul>
+            </details>
+          {{/if}}
         </div>
       </:content>
     </DAsyncContent>

@@ -32,8 +32,14 @@ RSpec.describe "Wiki co-authors" do
     visit "/t/#{post.topic.slug}/#{post.topic.id}"
   end
 
+  # The list is avatars, so the username lives in the img alt. Overflow
+  # avatars sit inside a closed `<details>` and are deliberately not counted.
   def listed_coauthors
-    page.all(".wiki-coauthors__user").map(&:text)
+    page.all(".wiki-coauthors__avatar").map { |avatar| avatar[:alt] }
+  end
+
+  def all_coauthors
+    page.all(".wiki-coauthors__avatar", visible: :all).map { |avatar| avatar[:alt] }
   end
 
   it "lists each editor once, in the order they first edited" do
@@ -93,6 +99,34 @@ RSpec.describe "Wiki co-authors" do
 
     visit_post(plain)
     expect(page).to have_css(".wiki-coauthors__label", text: "Co-edited by")
+  end
+
+  it "ranks by edit count, most edits first" do
+    post = wiki_post_in(
+      target_category,
+      editors: [first_editor, second_editor, second_editor],
+    )
+
+    visit_post(post)
+
+    expect(page).to have_css(".wiki-coauthors")
+    expect(listed_coauthors).to eq(%w[second_editor first_editor])
+  end
+
+  it "puts editors past max_avatars behind a disclosure" do
+    component.update_setting(:max_avatars, 1)
+    component.save!
+    post = wiki_post_in(target_category, editors: [second_editor, second_editor, first_editor])
+
+    visit_post(post)
+
+    expect(listed_coauthors).to eq(%w[second_editor])
+    expect(all_coauthors).to eq(%w[second_editor first_editor])
+    expect(page).to have_css(".wiki-coauthors__more-toggle", text: "+1")
+
+    find(".wiki-coauthors__more-toggle").click
+
+    expect(listed_coauthors).to eq(%w[second_editor first_editor])
   end
 
   it "renders nothing on an unedited wiki post" do

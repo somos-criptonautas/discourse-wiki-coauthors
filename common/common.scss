@@ -1,7 +1,7 @@
 .wiki-coauthors {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
+  align-items: center;
   gap: var(--space-1) var(--space-2);
   margin-top: var(--space-3);
   padding-top: var(--space-2);
@@ -13,16 +13,38 @@
   }
 
   &__list {
-    display: contents;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-1);
     list-style: none;
     margin: 0;
     padding: 0;
   }
 
-  &__item {
-    &:not(:last-child)::after {
-      content: ",";
-      color: var(--primary-medium);
+  &__user {
+    display: block;
+    line-height: 0;
+  }
+
+  &__avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+  }
+
+  // The disclosure sits inline with the avatars; opening it drops the rest
+  // onto the next row rather than reflowing the ones already shown.
+  &__more {
+    display: contents;
+  }
+
+  &__more-toggle {
+    cursor: pointer;
+    color: var(--primary-medium);
+
+    &:hover {
+      color: var(--primary);
     }
   }
 }

@@ -30,6 +30,7 @@ site-wide.
 | `label` | — | Text shown before the names. Empty uses the viewer's own language. |
 | `excluded_users` | — | Usernames never credited. See *Removing someone* below. |
 | `label_overrides` | — | Per-category wording. Categories not listed use `label`. |
+| `max_avatars` | `5` | Avatars shown before the rest go behind a `+N more` disclosure. |
 
 Ships with English and Spanish translations (`locales/en.yml`, `locales/es.yml`),
 covering both the setting descriptions and the default label
@@ -44,10 +45,17 @@ every language.
 - Reads `/posts/{id}/revisions/latest.json` for the revision range, then
   fetches each revision in that range in parallel. Revisions hidden by staff
   leave gaps that 404; those are dropped.
-- Lists each editor once, in the order they first edited. The post's own
-  author is excluded — nobody co-authors their own post.
-- Renders plain username links rather than reusing core's user components,
-  which change between Discourse versions.
+- Lists each editor once as an avatar linking to their profile, **ranked by
+  how many revisions they made**, most first. People tied on edit count keep
+  the order they first edited in. Each avatar's `title` carries the username
+  and that edit count; the `alt` carries the username.
+- Past `max_avatars`, the remainder goes behind a native `<details>`
+  disclosure labelled `+N more`. No JavaScript state, no modal — clicking it
+  reveals the rest in place.
+- The post's own author is excluded — nobody co-authors their own post.
+- Renders plain `<img>` and links rather than reusing core's user components,
+  which change between Discourse versions. Avatar URLs come from core's
+  `avatarUrl`, so CDN and retina sizing are handled.
 - While loading, and on failure, and when there are no co-authors, renders
   nothing at all. No spinner, no error block — it sits above the replies and
   would otherwise push them around for nothing.
