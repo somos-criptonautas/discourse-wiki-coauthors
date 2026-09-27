@@ -20,12 +20,7 @@ RSpec.describe "Wiki co-authors" do
   # A wiki post with one revision per editor, in the order given. Revisions are
   # what the component reads; a plain `post.update` would not create any.
   def wiki_post_in(category, editors: [], wiki: true, tags: [])
-    post =
-      Fabricate(
-        :post,
-        user: author,
-        topic: Fabricate(:topic, category: category, tags: tags),
-      )
+    post = Fabricate(:post, user: author, topic: Fabricate(:topic, category: category, tags: tags))
     post.update!(wiki: wiki)
 
     editors.each_with_index do |editor, index|
@@ -109,10 +104,7 @@ RSpec.describe "Wiki co-authors" do
   end
 
   it "ranks by edit count, most edits first" do
-    post = wiki_post_in(
-      target_category,
-      editors: [first_editor, second_editor, second_editor],
-    )
+    post = wiki_post_in(target_category, editors: [first_editor, second_editor, second_editor])
 
     visit_post(post)
 
