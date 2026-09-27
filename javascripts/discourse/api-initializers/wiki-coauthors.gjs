@@ -171,14 +171,37 @@ class WikiCoauthors extends Component {
 
 export default apiInitializer((api) => {
   const categoryIds = parseIds(settings.target_categories);
+  const tags = new Set(
+    (settings.target_tags || "")
+      .split("|")
+      .filter(Boolean)
+      .map((tag) => tag.trim().toLowerCase())
+  );
+
+  // Category and tag are a union, not an intersection: a topic qualifies by
+  // sitting in a listed category OR by carrying a listed tag. With neither set,
+  // every wiki post qualifies.
+  const inScope = (topic) => {
+    if (categoryIds.length === 0 && tags.size === 0) {
+      return true;
+    }
+
+    if (categoryIds.includes(topic?.category_id)) {
+      return true;
+    }
+
+    // Core normalizes `topic.tags` to `{ name, id }` objects via `serializeTags`,
+    // but plain strings reach here on some paths, so accept both.
+    return (topic?.tags || []).some((tag) => {
+      const name = typeof tag === "string" ? tag : tag?.name;
+      return !!name && tags.has(name.toLowerCase());
+    });
+  };
 
   // `version` is `public_version` for everyone but staff, so a post whose only
   // revisions are hidden reads as unedited and renders nothing.
   const shouldRender = (post) =>
-    post?.firstPost &&
-    post.wiki &&
-    post.version > 1 &&
-    (categoryIds.length === 0 || categoryIds.includes(post.topic?.category_id));
+    post?.firstPost && post.wiki && post.version > 1 && inScope(post.topic);
 
   // An empty setting falls back to the theme's own translation, so a
   // Spanish-reading member sees "Coeditado por" without anyone configuring it.

@@ -26,7 +26,8 @@ site-wide.
 
 | Setting | Default | Notes |
 | --- | --- | --- |
-| `target_categories` | — | Categories whose wiki posts show the list. Empty means every category. |
+| `target_categories` | — | Categories whose wiki posts show the list. |
+| `target_tags` | — | Tags whose wiki posts show the list, in any category. |
 | `label` | — | Text shown before the names. Empty uses the viewer's own language. |
 | `excluded_users` | — | Usernames never credited. See *Removing someone* below. |
 | `label_overrides` | — | Per-category wording. Categories not listed use `label`. |
@@ -40,8 +41,11 @@ every language.
 ## Behavior
 
 - Renders only on the **first post** of a topic, only when that post is a
-  wiki, only when it has at least one visible revision, and only in the
-  target categories.
+  wiki, and only when it has at least one visible revision.
+- Scope is `target_categories` **union** `target_tags` — a topic qualifies by
+  sitting in a listed category *or* by carrying a listed tag, so wiki topics
+  scattered across many categories can be covered by one tag. With neither
+  set, every wiki post qualifies.
 - Reads `/posts/{id}/revisions/latest.json` for the revision range, then
   fetches each revision in that range in parallel. Revisions hidden by staff
   leave gaps that 404; those are dropped.

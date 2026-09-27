@@ -2,7 +2,8 @@ es:
   theme_metadata:
     description: "Acredita a todas las personas que editaron un post wiki, listadas debajo del propio post."
     settings:
-      target_categories: "Categorías cuyos posts wiki muestran la lista de coautores. Vacío significa todas las categorías."
+      target_categories: "Categorías cuyos posts wiki muestran la lista de coautores. Se combina con las etiquetas de abajo como unión."
+      target_tags: "Etiquetas cuyos posts wiki muestran la lista de coautores, en cualquier categoría. Si no se configura ninguna categoría ni etiqueta, se muestra en todos los posts wiki."
       label: "Texto que aparece antes de los nombres de los coautores. Vacío usa el idioma de quien lee."
       excluded_users: "Usuarios que nunca se acreditan en la lista. Solo es un filtro de visualización: sus ediciones siguen en el historial del post."
       max_avatars: "Cuántos avatares se muestran antes de que el resto pase a un desplegable."

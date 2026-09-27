@@ -7,6 +7,8 @@ RSpec.describe "Wiki co-authors" do
   fab!(:first_editor) { Fabricate(:user, username: "first_editor") }
   fab!(:second_editor) { Fabricate(:user, username: "second_editor") }
 
+  fab!(:wiki_tag) { Fabricate(:tag, name: "wiki") }
+
   fab!(:target_category) { Fabricate(:category, name: "Docs") }
   fab!(:other_category) { Fabricate(:category, name: "Guides") }
 
@@ -17,8 +19,13 @@ RSpec.describe "Wiki co-authors" do
 
   # A wiki post with one revision per editor, in the order given. Revisions are
   # what the component reads; a plain `post.update` would not create any.
-  def wiki_post_in(category, editors: [], wiki: true)
-    post = Fabricate(:post, user: author, topic: Fabricate(:topic, category: category))
+  def wiki_post_in(category, editors: [], wiki: true, tags: [])
+    post =
+      Fabricate(
+        :post,
+        user: author,
+        topic: Fabricate(:topic, category: category, tags: tags),
+      )
     post.update!(wiki: wiki)
 
     editors.each_with_index do |editor, index|
@@ -127,6 +134,49 @@ RSpec.describe "Wiki co-authors" do
     find(".wiki-coauthors__more-toggle").click
 
     expect(listed_coauthors).to eq(%w[second_editor first_editor])
+  end
+
+  it "renders on a tagged wiki post in any category" do
+    SiteSetting.tagging_enabled = true
+    component.update_setting(:target_categories, "")
+    component.update_setting(:target_tags, "wiki")
+    component.save!
+
+    post = wiki_post_in(other_category, editors: [first_editor], tags: [wiki_tag])
+
+    visit_post(post)
+
+    expect(page).to have_css(".wiki-coauthors")
+    expect(listed_coauthors).to eq(%w[first_editor])
+  end
+
+  it "renders nothing on an untagged wiki post when only tags are set" do
+    SiteSetting.tagging_enabled = true
+    component.update_setting(:target_categories, "")
+    component.update_setting(:target_tags, "wiki")
+    component.save!
+
+    post = wiki_post_in(other_category, editors: [first_editor])
+
+    visit_post(post)
+
+    expect(page).to have_css(".cooked")
+    expect(page).to have_no_css(".wiki-coauthors")
+  end
+
+  it "treats categories and tags as a union" do
+    SiteSetting.tagging_enabled = true
+    component.update_setting(:target_tags, "wiki")
+    component.save!
+
+    by_category = wiki_post_in(target_category, editors: [first_editor])
+    by_tag = wiki_post_in(other_category, editors: [first_editor], tags: [wiki_tag])
+
+    visit_post(by_category)
+    expect(page).to have_css(".wiki-coauthors")
+
+    visit_post(by_tag)
+    expect(page).to have_css(".wiki-coauthors")
   end
 
   it "renders nothing on an unedited wiki post" do
