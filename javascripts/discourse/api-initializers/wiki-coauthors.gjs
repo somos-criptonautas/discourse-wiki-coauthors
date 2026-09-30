@@ -1,10 +1,10 @@
 import Component from "@glimmer/component";
 import { apiInitializer } from "discourse/lib/api";
 import { avatarUrl } from "discourse/lib/avatar-utils";
-import getURL from "discourse/lib/get-url";
 import Post from "discourse/models/post";
 import { i18n } from "discourse-i18n";
 import DAsyncContent from "discourse/ui-kit/d-async-content";
+import DUserLink from "discourse/ui-kit/d-user-link";
 
 // Core's revision serializer only ever reports the last 99 revisions, so stay
 // under that and keep the request burst bounded however edited a post is.
@@ -99,7 +99,6 @@ async function fetchEditors(post) {
     .sort((a, b) => b.edits - a.edits)
     .map((editor) => ({
       ...editor,
-      url: getURL(`/u/${editor.username}`),
       avatarUrl: avatarUrl(editor.avatarTemplate, "small"),
     }));
 }
@@ -111,12 +110,15 @@ const overflowLabel = (editors) =>
 
 // `title` rather than a visible name: the list is avatars, and the edit count
 // is the reason this person is ranked where they are.
+// DUserLink carries `data-user-card`, which is what core's click handler looks
+// for to open the profile card. It also builds the profile href and respects
+// `hide_user_profiles_from_public` for anonymous visitors.
 const CoauthorAvatar = <template>
   <li class="wiki-coauthors__item">
-    <a
+    <DUserLink
       class="wiki-coauthors__user"
-      href={{@editor.url}}
       title="{{@editor.displayUsername}} ({{@editor.edits}})"
+      @username={{@editor.username}}
     >
       <img
         class="wiki-coauthors__avatar"
@@ -126,7 +128,7 @@ const CoauthorAvatar = <template>
         height="24"
         loading="lazy"
       />
-    </a>
+    </DUserLink>
   </li>
 </template>;
 

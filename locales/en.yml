@@ -2,9 +2,9 @@ en:
   theme_metadata:
     description: "Credits everyone who edited a wiki post, listed under the post itself."
     settings:
-      target_categories: "Categories whose wiki posts show the co-author list. Combined with the tags below as a union."
-      target_tags: "Tags whose wiki posts show the co-author list, in any category. With no categories and no tags set, every wiki post shows it."
-      label: "Text shown before the co-author names. Empty uses the viewer's own language."
+      target_categories: "Categories whose wiki posts show the co-editor list. Combined with the tags below as a union."
+      target_tags: "Tags whose wiki posts show the co-editor list, in any category. With no categories and no tags set, every wiki post shows it."
+      label: "Text shown before the co-editor names. Empty uses the viewer's own language."
       excluded_users: "Usernames never credited in the list. A display filter only: their edits stay in the post's history."
       max_avatars: "How many avatars to show before the rest go behind a disclosure."
       label_overrides:

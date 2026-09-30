@@ -171,6 +171,18 @@ RSpec.describe "Wiki co-authors" do
     expect(page).to have_css(".wiki-coauthors")
   end
 
+  it "wires each avatar to the profile card" do
+    post = wiki_post_in(target_category, editors: [first_editor])
+
+    visit_post(post)
+
+    expect(page).to have_css(".wiki-coauthors__user[data-user-card='first_editor']")
+
+    find(".wiki-coauthors__user").click
+
+    expect(page).to have_css(".user-card.user-card-first_editor")
+  end
+
   it "renders nothing on an unedited wiki post" do
     post = wiki_post_in(target_category)
 

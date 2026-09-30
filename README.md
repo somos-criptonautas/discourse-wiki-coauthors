@@ -1,4 +1,6 @@
-# Wiki Co-authors
+# Wiki Co-editors
+
+**ENGLISH** | [ESPAÑOL](README.es.md)
 
 Credits everyone who edited a wiki post, listed under the post itself:
 
@@ -57,9 +59,12 @@ every language.
   disclosure labelled `+N more`. No JavaScript state, no modal — clicking it
   reveals the rest in place.
 - The post's own author is excluded — nobody co-authors their own post.
-- Renders plain `<img>` and links rather than reusing core's user components,
-  which change between Discourse versions. Avatar URLs come from core's
-  `avatarUrl`, so CDN and retina sizing are handled.
+- Clicking an avatar opens the member's **profile card**. Each link is core's
+  `DUserLink`, which emits the `data-user-card` attribute core's click handler
+  watches for, builds the profile href, and respects
+  `hide_user_profiles_from_public` for anonymous visitors.
+- Avatar URLs come from core's `avatarUrl`, so CDN and retina sizing are
+  handled.
 - While loading, and on failure, and when there are no co-authors, renders
   nothing at all. No spinner, no error block — it sits above the replies and
   would otherwise push them around for nothing.
@@ -140,3 +145,9 @@ discourse_theme rspec .
 the component installed; `spec/system/wiki_coauthors_spec.rb` covers the
 gating, the de-duplication and ordering, the author exclusion, and that an
 anonymous visitor sees the list with `edit_history_visible_to_public` off.
+
+## License
+
+GPL-3.0. See [LICENSE](LICENSE).
+
+Text of this README under [CC BY-NC-SA 4.0](CC-BY-NC-SA-4.0.txt).
