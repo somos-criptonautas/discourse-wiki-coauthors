@@ -4,7 +4,7 @@
   "authors": "satoshinotdead",
   "about_url": "https://github.com/somos-criptonautas/discourse-wiki-coauthors",
   "license_url": "https://github.com/somos-criptonautas/discourse-wiki-coauthors/blob/main/LICENSE",
-  "theme_version": "0.0.1",
+  "theme_version": "1.0.0",
   "minimum_discourse_version": "2026.7.2",
   "maximum_discourse_version": null,
   "assets": {},
