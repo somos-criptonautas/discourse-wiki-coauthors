@@ -15,6 +15,10 @@ import DUserLink from "discourse/ui-kit/d-user-link";
 // contributor ids in a post custom field when a revision is created.
 const MAX_REVISIONS = 50;
 
+// Kept in step with --wiki-coauthors-avatar-size in common.scss: the CSS sizes
+// the box, this picks the image fetched into it.
+const AVATAR_SIZE = 30;
+
 // A display filter, not a removal: the revisions stay in the database and stay
 // visible in the post's own history modal. Serializer usernames are lowercased,
 // so match on that.
@@ -99,7 +103,10 @@ async function fetchEditors(post) {
     .sort((a, b) => b.edits - a.edits)
     .map((editor) => ({
       ...editor,
-      avatarUrl: avatarUrl(editor.avatarTemplate, "small"),
+      // 30px: a quarter up from core's "small" (24). A raw number is fine here
+      // — `avatarUrl` runs it through `getRawAvatarSize`, which scales for the
+      // device pixel ratio and snaps to a size the site actually serves.
+      avatarUrl: avatarUrl(editor.avatarTemplate, AVATAR_SIZE),
     }));
 }
 
@@ -124,8 +131,8 @@ const CoauthorAvatar = <template>
         class="wiki-coauthors__avatar"
         src={{@editor.avatarUrl}}
         alt={{@editor.displayUsername}}
-        width="24"
-        height="24"
+        width="30"
+        height="30"
         loading="lazy"
       />
     </DUserLink>

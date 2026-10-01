@@ -1,4 +1,12 @@
 .wiki-coauthors {
+  // Override either of these in your theme to retune the stack. The JS reads
+  // the size separately (AVATAR_SIZE) to pick which image it fetches, so keep
+  // them in step if you change the size.
+  --wiki-coauthors-avatar-size: 30px;
+
+  // Fraction of each avatar left uncovered by the next one. The design calls
+  // for 50–70%; 0.65 sits inside that.
+  --wiki-coauthors-avatar-visible: 0.65;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -12,14 +20,33 @@
     color: var(--primary-medium);
   }
 
+  // No gap: the overlap below does the spacing.
   &__list {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: var(--space-1);
     list-style: none;
     margin: 0;
     padding: 0;
+  }
+
+  &__item {
+    // All items positioned with `z-index: auto` still paint in document order,
+    // so each avatar covers the one before it and the last sits on top.
+    position: relative;
+
+    &:not(:first-child) {
+      margin-left: calc(
+        var(--wiki-coauthors-avatar-size) *
+          (var(--wiki-coauthors-avatar-visible) - 1)
+      );
+    }
+
+    // Lifts a hovered avatar clear of both neighbours, so the covered 35% is
+    // reachable and the whole face is visible before clicking through.
+    &:hover {
+      z-index: 1;
+    }
   }
 
   &__user {
@@ -28,9 +55,12 @@
   }
 
   &__avatar {
-    width: 24px;
-    height: 24px;
+    width: var(--wiki-coauthors-avatar-size);
+    height: var(--wiki-coauthors-avatar-size);
     border-radius: 50%;
+
+    // A ring in the page colour reads as the gap between overlapping faces.
+    box-shadow: 0 0 0 2px var(--secondary);
   }
 
   // The disclosure sits inline with the avatars; opening it drops the rest
