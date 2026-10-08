@@ -148,6 +148,6 @@ anonymous visitor sees the list with `edit_history_visible_to_public` off.
 
 ## License
 
-GPL-3.0. See [LICENSE](LICENSE).
+MIT. See [LICENSE](LICENSE).
 
 Text of this README under [CC BY-NC-SA 4.0](CC-BY-NC-SA-4.0.txt).
