@@ -18,7 +18,7 @@ RSpec.describe "Screenshots" do
   def save(name)
     path = Rails.root.join("tmp/capybara/screenshots/#{name}.png")
     FileUtils.mkdir_p(path.dirname)
-    page.save_screenshot(path.to_s)
+    page.driver.with_playwright_page { |pw| pw.screenshot(path: path.to_s) }
   end
 
   it "shows the co-editors under a wiki post" do

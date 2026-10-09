@@ -9,7 +9,7 @@ import DUserLink from "discourse/ui-kit/d-user-link";
 // Core's revision serializer only ever reports the last 99 revisions, so stay
 // under that and keep the request burst bounded however edited a post is.
 //
-// ponytail: one request per revision, each one computing a server-side diff we
+// One request per revision, each one computing a server-side diff we
 // throw away. Fine for the handful of edits a co-authored wiki post collects.
 // If posts get heavily edited, move the aggregation into a plugin that caches
 // contributor ids in a post custom field when a revision is created.
