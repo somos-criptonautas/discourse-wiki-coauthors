@@ -1,0 +1,10 @@
+name: Screenshots
+
+on: workflow_dispatch
+
+permissions:
+  contents: write
+
+jobs:
+  screenshots:
+    uses: somos-criptonautas/actions/.github/workflows/theme-screenshots.yml@main
