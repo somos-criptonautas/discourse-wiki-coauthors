@@ -14,6 +14,8 @@ muestra a los colaboradores como lista: [una petición abierta desde
 (Shared Drafts) no son una alternativa: publicar un borrador compartido **borra el historial
 de ediciones del primer post** y deja al creador original como único autor.
 
+![Coeditado por, bajo un post wiki](docs/screenshots/coauthors.png)
+
 ## Instalación
 
 Admin → Personalizar → Temas → Instalar → Desde un repositorio git, usando la URL de clonado

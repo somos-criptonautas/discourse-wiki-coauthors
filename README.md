@@ -14,6 +14,8 @@ surfaces the contributors as a list — [a feature request open since
 is not an alternative: publishing a shared draft **deletes the first post's
 edit history** and keeps the original creator as the sole author.
 
+![Co-edited by, under a wiki post](docs/screenshots/coauthors.png)
+
 ## Install
 
 Admin → Customize → Themes → Install → From a git repository, using this
