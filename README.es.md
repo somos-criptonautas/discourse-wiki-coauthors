@@ -2,6 +2,8 @@
 
 [ENGLISH](README.md) | **ESPAÑOL**
 
+Mantenido por Criptonautas. Sin afiliación ni respaldo de Discourse (Civilized Discourse Construction Kit, Inc.).
+
 Da crédito a todas las personas que editaron un post wiki, en una lista bajo el propio post:
 
 > Coeditado por first_editor, second_editor
